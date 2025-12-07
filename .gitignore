@@ -1,0 +1,29 @@
+# editor
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# macOS
+.DS_Store
+
+# virtualenv
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# memory leak reports
+memory_coverage/
+
+# database
+*.db
+*.sqlite3
+
+# temps
+*.log
+*.bak
+*.tmp
