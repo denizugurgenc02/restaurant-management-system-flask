@@ -1,0 +1,22 @@
+# virtualenv
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# git
+.git/
+.gitignore
+
+# docker
+Dockerfile
+.dockerignore
+
+# editor
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# docs
+docs/

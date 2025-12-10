@@ -1,11 +1,8 @@
 import os
-import secrets
 
 
 class Config:
-    SECRET_KEY: str = os.environ.get("SECRET_KEY") or secrets.token_urlsafe(
-        32
-    )  # Flask-Core
+    SECRET_KEY: str = os.environ.get("SECRET_KEY")  # Flask-Core
     DEBUG: bool = False  # Flask-Core
     TESTING: bool = False  # Flask-Core
     JSON_SORT_KEYS: bool = False  # Flask-Core
@@ -13,6 +10,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False  # SQLAlchemy
     SQLALCHEMY_ECHO: bool = False  # SQLAlchemy
+    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
     FLASK_MIGRATE_TABLE: str = "alembic_version"  # Flask-Migrate
 
@@ -30,18 +28,5 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_ECHO = True
 
-    SQLALCHEMY_DATABASE_URI: str = (
-        "postgresql://postgres:asd123@localhost:5431/third_db"
-    )
 
-
-class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI: str = os.environ.get("DATABASE_URL")
-
-    CACHE_TYPE: str = "redis"
-
-
-config_by_name = {
-    "development": DevelopmentConfig,
-    "production": ProductionConfig,
-}
+config_by_name = {"development": DevelopmentConfig}
