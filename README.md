@@ -21,10 +21,10 @@ When you make changes to your SQLAlchemy models, use the following commands; \
 ## With Docker
 
 ### Build a image
-docker compose build
+`docker compose build`
 
 ### Up the image
-docker compose up
+`docker compose up`
 
 ## Without docker
 
