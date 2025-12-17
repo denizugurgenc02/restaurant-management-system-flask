@@ -1,5 +1,5 @@
 import importlib
-import pkgutil
+from pathlib import Path
 
 from flask import Blueprint, Flask
 
@@ -8,35 +8,37 @@ from flaskr.core.extensions import db, migrate
 
 DEFAULT_CONFIG = "development"
 
+base_path = Path(__file__).resolve().parent
+domains_path = base_path / "domains"
+
 
 def load_all_models():  # Necessary for migrate command
-    domain_package = importlib.import_module(".domains", __name__)
-    package_dir = domain_package.__path__[0]
+    for path in domains_path.glob("*/models.py"):
+        domain_name = path.parent.name
+        domain_path = f"flaskr.domains.{domain_name}.models"
 
-    for _, module_name, is_pkg in pkgutil.iter_modules([package_dir]):
-        if is_pkg:
-            model_module_path = f".domains.{module_name}.models"
-            try:
-                importlib.import_module(model_module_path, __name__)
-                print(f"Loaded model: {model_module_path}")
-            except ImportError as e:
-                if "No module named" not in str(e):
-                    raise e
+        try:
+            importlib.import_module(domain_path)
+        except Exception as e:
+            print(f"Error with models loading, domain name: {domain_name}. {e}")
+        print(f"Successfully entity loaded: {domain_name}")
 
 
 def register_blueprints(app: Flask):  # Registration to endpoints. --SOLID--
-    domain_package = importlib.import_module(".domains", __name__)
-    package_dir = domain_package.__path__[0]
+    for path in domains_path.glob("*/__init__.py"):
+        domain_name = path.parent.name
+        domain_path = f"flaskr.domains.{domain_name}"
 
-    for _, module_name, is_pkg in pkgutil.iter_modules([package_dir]):
-        if is_pkg:
-            module_path = f".domains.{module_name}"
-            module = importlib.import_module(module_path, __name__)
-
-            if hasattr(module, "bp") and isinstance(module.bp, Blueprint):
-                blueprint = module.bp
+        try:
+            domain = importlib.import_module(domain_path)
+            if hasattr(domain, "bp") and isinstance(domain.bp, Blueprint):
+                blueprint = domain.bp
                 app.register_blueprint(blueprint)
                 print(f"Successfully registered blueprint: {blueprint.name}")
+            else:
+                print("domain has not a bp object")
+        except Exception as e:
+            print(f"Error with blueprints loading, domain name: {domain_name}. {e}")
 
 
 def create_app(config_name: str = DEFAULT_CONFIG):
