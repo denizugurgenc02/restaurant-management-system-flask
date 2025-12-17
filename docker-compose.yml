@@ -33,7 +33,7 @@ services:
     volumes:
       - .:/app
       - /app/__pypackages__
-    command: ["flask", "run", "--host=0.0.0.0"]
+    command: ["flask", "run", "--host=0.0.0.0", "--debug"]
 
 volumes:
   postgres_data:
