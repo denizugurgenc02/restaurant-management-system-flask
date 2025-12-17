@@ -1,5 +1,7 @@
 import os
 
+# https://flask.palletsprojects.com/en/stable/config/#SECRET_KEY
+
 
 class Config:
     SECRET_KEY: str = os.environ.get("SECRET_KEY")  # Flask-Core
