@@ -16,11 +16,7 @@ class UserService:
             abort(404, description="There is no user")
 
         response = user.serialize
-        response["role"] = {
-            "id": user.role.id,
-            "name": user.role.name,
-            "created_at": user.role.created_at.isoformat(),
-        }
+        response["role"] = {"id": user.role.id, "name": user.role.name}
         return response
 
     def list_users(self) -> List:
@@ -50,11 +46,15 @@ class UserService:
                 role_id=role_id,
             )
         )
-        return new_user.serialize
+        user_id = new_user.serialize.get("id")
+        if user_id:
+            return self.get_by_id(item_id=user_id)
 
     def update_user(self, user_id: int, data: Dict) -> Dict | None:
         self.get_by_id(item_id=user_id)
-        return self.repository.update(item_id=user_id, data=data).serialize
+        response = self.repository.update(item_id=user_id, data=data)
+        if response:
+            return self.get_by_id(item_id=user_id)
 
     def delete_user(self, user_id: int) -> bool:
         self.get_by_id(item_id=user_id)

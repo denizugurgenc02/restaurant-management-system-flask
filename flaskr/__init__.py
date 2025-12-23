@@ -6,30 +6,11 @@ from flask import Blueprint, Flask
 from flaskr.core.config import config_by_name
 from flaskr.core.error_handler import ErrorHandler
 from flaskr.core.extensions import db, migrate
-from flaskr.core.setup import UserRole
-from flaskr.domains.role.models import Role
 
 DEFAULT_CONFIG = "development"
 
 base_path = Path(__file__).resolve().parent
 domains_path = base_path / "domains"
-
-
-def seed_roles(app: Flask):
-    with app.app_context():
-        existing_roles = db.session.execute(db.select(Role.name)).scalars().all()
-
-        for role_enum in UserRole:
-            if role_enum.value not in existing_roles:
-                new_role = Role(name=role_enum.value)
-                db.session.add(new_role)
-
-        try:
-            db.session.commit()
-            print("Successfully created roles")
-        except Exception as e:
-            db.session.rollback()
-            print(f"Creation a role phase error: {e}")
 
 
 def load_all_models():  # Necessary for migrate command
@@ -76,7 +57,6 @@ def create_app(config_name: str = DEFAULT_CONFIG):
 
     with app.app_context():
         load_all_models()
-        seed_roles(app)
 
     register_blueprints(app)
 

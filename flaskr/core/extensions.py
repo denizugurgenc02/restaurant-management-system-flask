@@ -6,6 +6,7 @@ from flask.views import MethodView
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
 
@@ -44,15 +45,19 @@ class BaseRepository(Generic[T]):
     def get_by_id(self, item_id: int) -> Optional[T]:
         return db.session.get(self.model, item_id)
 
-    def update(self, item_id: int, data: Dict) -> T:
+    def update(self, item_id: int, data: Dict) -> bool:
         entity = db.session.get(self.model, item_id)
 
         for key, value in data.items():
             if hasattr(entity, key) and key != "id":
                 setattr(entity, key, value)
 
-        db.session.commit()
-        return entity
+        try:
+            db.session.commit()
+            return True
+        except SQLAlchemyError as e:
+            print(e)
+            return False
 
     def add(self, entity: T) -> T:
         db.session.add(entity)

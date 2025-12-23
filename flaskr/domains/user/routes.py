@@ -37,8 +37,8 @@ class UserDetailAPI(BaseRoutes):
     def patch(self, user_id: int):
         data = request.get_json()
 
-        updated_user = self.service.update_user(user_id=user_id, data=data)
-        return self.format_response(updated_user)
+        response = self.service.update_user(user_id=user_id, data=data)
+        return self.format_response(data=response)
 
     def delete(self, user_id: int):
         response = self.service.delete_user(user_id=user_id)

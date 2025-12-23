@@ -12,4 +12,7 @@ echo "PostgreSQL started."
 echo "Running database migrations (upgrade)..."
 flask db upgrade
 
+echo "Crate a base roles"
+flask seed-db
+
 exec "$@"
