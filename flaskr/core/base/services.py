@@ -22,7 +22,12 @@ class BaseService(Generic[T]):
         return [item.serialize for item in items]
 
     def create_new_item(
-        self, model_class, func_name: str, stun_name: str, unique_key: str, **kwargs
+        self,
+        model_class,
+        stun_name: str,
+        unique_key: str,
+        func_name: str = "get_by_name",
+        **kwargs,
     ) -> Dict | None:
 
         if existing_item := getattr(self.repository, func_name)(stun_name, unique_key):

@@ -11,8 +11,7 @@ class CategoryService(BaseService):
     def create_new_category(self, name: str) -> Dict | None:
         return self.create_new_item(
             model_class=Category,
-            func_name="get_by_name",
             unique_key=name,
-            name=name,
             stun_name="name",
+            name=name,
         )

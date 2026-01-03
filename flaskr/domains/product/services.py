@@ -33,7 +33,6 @@ class ProductService(BaseService):
     ) -> Dict | None:
         return self.create_new_item(
             model_class=Product,
-            func_name="get_by_name",
             unique_key=name,
             stun_name="name",
             price=price,
